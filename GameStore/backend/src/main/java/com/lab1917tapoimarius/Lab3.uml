@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>D:/Facultate/sem4/MPP/lab-3-917tapoimarius</OriginalElement>
+  <nodes>
+    <node x="306.5187796751377" y="-4.1672986406745025">com.lab1917tapoimarius.Lab1917tapoimariusApplicationTests</node>
+    <node x="952.274955091195" y="499.7110366307648">com.lab1917tapoimarius.Repository.LoadDatabase</node>
+    <node x="435.906164832597" y="537.3081084135198">com.lab1917tapoimarius.Model.Customer</node>
+    <node x="1453.0096696100236" y="279.87646063764964">com.lab1917tapoimarius.Repository.GameRepository</node>
+    <node x="172.42576909588436" y="332.871415806998">com.lab1917tapoimarius.Service.CustomerService</node>
+    <node x="703.7920742665228" y="385.12657146265923">com.lab1917tapoimarius.Exception.NotFoundAdvice</node>
+    <node x="1008.3827278920488" y="641.5962978321438">com.lab1917tapoimarius.Controller.Controller</node>
+    <node x="640.4990180285726" y="970.5091864920041">com.lab1917tapoimarius.Model.Game</node>
+    <node x="1457.7643956490817" y="370.32829905154324">com.lab1917tapoimarius.Service.GameService</node>
+    <node x="1107.4332525028453" y="180.97809058261166">com.lab1917tapoimarius.Service.TransactionService</node>
+    <node x="1371.6731381221362" y="-14.449116030828968">com.lab1917tapoimarius.Repository.TransactionRepository</node>
+    <node x="215.46976242234237" y="130.63129850846212">com.lab1917tapoimarius.Exception.NotFoundException</node>
+    <node x="704.0726763202489" y="544.0481788964747">com.lab1917tapoimarius.Model.Developer</node>
+    <node x="755.6366808520787" y="118.09257875686443">com.lab1917tapoimarius.Lab1917tapoimariusApplication</node>
+    <node x="489.5270000638005" y="135.92121684562608">com.lab1917tapoimarius.Model.Transaction</node>
+    <node x="-147.32037854177656" y="385.1586336012982">com.lab1917tapoimarius.Service.DeveloperService</node>
+    <node x="1123.3562541126823" y="59.323504972012195">com.lab1917tapoimarius.Repository.CustomerRepository</node>
+    <node x="-41.952038670020954" y="241.75388225272243">com.lab1917tapoimarius.Repository.DeveloperRepository</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="com.lab1917tapoimarius.Service.CustomerService" target="com.lab1917tapoimarius.Repository.CustomerRepository" relationship="TO_ONE">
+      <point x="-102.95600667354199" y="-72.0" />
+      <point x="197.96976242234237" y="73.82350497201219" />
+      <point x="-92.0" y="0.0" />
+    </edge>
+    <edge source="com.lab1917tapoimarius.Controller.Controller" target="com.lab1917tapoimarius.Service.GameService" relationship="TO_ONE">
+      <point x="224.5000000000001" y="0.0" />
+      <point x="1649.2643956490817" y="889.5962978321438" />
+      <point x="0.0" y="83.0" />
+    </edge>
+    <edge source="com.lab1917tapoimarius.Service.DeveloperService" target="com.lab1917tapoimarius.Repository.DeveloperRepository" relationship="TO_ONE">
+      <point x="70.86833987175561" y="-72.0" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="com.lab1917tapoimarius.Controller.Controller" target="com.lab1917tapoimarius.Service.DeveloperService" relationship="TO_ONE">
+      <point x="0.0" y="248.0" />
+      <point x="1232.882727892049" y="1354.0091864920041" />
+      <point x="-17.820378541776563" y="1354.0091864920041" />
+      <point x="0.0" y="72.0" />
+    </edge>
+    <edge source="com.lab1917tapoimarius.Controller.Controller" target="com.lab1917tapoimarius.Service.TransactionService" relationship="TO_ONE">
+      <point x="181.89222719914608" y="-248.0" />
+      <point x="1414.774955091195" y="252.97809058261166" />
+      <point x="137.5000000000001" y="0.0" />
+    </edge>
+    <edge source="com.lab1917tapoimarius.Model.Game" target="com.lab1917tapoimarius.Model.Developer" relationship="TO_ONE">
+      <point x="57.07365829167634" y="-183.0" />
+      <point x="0.0" y="183.0" />
+    </edge>
+    <edge source="com.lab1917tapoimarius.Model.Transaction" target="com.lab1917tapoimarius.Model.Game" relationship="TO_ONE">
+      <point x="76.99999993619952" y="-2.1684562608470515E-4" />
+      <point x="674.0" y="262.921" />
+      <point x="674.0" y="927.548" />
+      <point x="721.999" y="927.548" />
+      <point x="-1.802857252641843E-5" y="-183.0001864920041" />
+    </edge>
+    <edge source="com.lab1917tapoimarius.Controller.Controller" target="com.lab1917tapoimarius.Service.CustomerService" relationship="TO_ONE">
+      <point x="-224.5" y="52.95170216785618" />
+      <point x="300.92576909588433" y="942.548" />
+      <point x="0.0" y="72.0" />
+    </edge>
+    <edge source="com.lab1917tapoimarius.Service.TransactionService" target="com.lab1917tapoimarius.Repository.TransactionRepository" relationship="TO_ONE">
+      <point x="130.0000000000001" y="-72.0" />
+      <point x="-95.23988561929082" y="14.5" />
+    </edge>
+    <edge source="com.lab1917tapoimarius.Service.GameService" target="com.lab1917tapoimarius.Repository.GameRepository" relationship="TO_ONE">
+      <point x="-116.25472603905814" y="-83.0" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="com.lab1917tapoimarius.Model.Developer" target="com.lab1917tapoimarius.Model.Game" relationship="TO_MANY">
+      <point x="-74.99967632024891" y="-1.788964747220234E-4" />
+      <point x="674.0" y="727.048" />
+      <point x="674.0" y="927.548" />
+      <point x="721.999" y="927.548" />
+      <point x="-1.802857252641843E-5" y="-183.0001864920041" />
+    </edge>
+    <edge source="com.lab1917tapoimarius.Model.Transaction" target="com.lab1917tapoimarius.Model.Customer" relationship="TO_ONE">
+      <point x="-50.12083523120347" y="127.0" />
+      <point x="0.0" y="-149.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="0.6115107913669064" showDependencies="true" x="856.2529411764706" y="708.6176470588235" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Methods</Category>
+    <Category>Properties</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

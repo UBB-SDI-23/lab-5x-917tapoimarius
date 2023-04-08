@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>DATABASE</ID>
+  <OriginalElement>c6a3d151-13ec-45dd-aaba-93956e072300.DATABASE:LAB1917TAPOIMARIUS</OriginalElement>
+  <nodes>
+    <node x="101.0" y="132.0">c6a3d151-13ec-45dd-aaba-93956e072300.TABLE:LAB1917TAPOIMARIUS.PUBLIC.CUSTOMER</node>
+    <node x="3.5" y="358.0">c6a3d151-13ec-45dd-aaba-93956e072300.TABLE:LAB1917TAPOIMARIUS.PUBLIC.TRANSACTION</node>
+    <node x="-125.0" y="-94.0">c6a3d151-13ec-45dd-aaba-93956e072300.TABLE:LAB1917TAPOIMARIUS.PUBLIC.DEVELOPER</node>
+    <node x="-114.0" y="121.0">c6a3d151-13ec-45dd-aaba-93956e072300.TABLE:LAB1917TAPOIMARIUS.PUBLIC.GAME</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="c6a3d151-13ec-45dd-aaba-93956e072300.TABLE:LAB1917TAPOIMARIUS.PUBLIC.TRANSACTION" target="c6a3d151-13ec-45dd-aaba-93956e072300.TABLE:LAB1917TAPOIMARIUS.PUBLIC.CUSTOMER" relationship="REFERENCES">
+      <point x="50.5" y="-71.5" />
+      <point x="155.0" y="333.0" />
+      <point x="225.5" y="333.0" />
+      <point x="0.0" y="82.5" />
+    </edge>
+    <edge source="c6a3d151-13ec-45dd-aaba-93956e072300.TABLE:LAB1917TAPOIMARIUS.PUBLIC.TRANSACTION" target="c6a3d151-13ec-45dd-aaba-93956e072300.TABLE:LAB1917TAPOIMARIUS.PUBLIC.GAME" relationship="REFERENCES">
+      <point x="-50.5" y="-71.5" />
+      <point x="54.0" y="333.0" />
+      <point x="-16.5" y="333.0" />
+      <point x="0.0" y="93.5" />
+    </edge>
+    <edge source="c6a3d151-13ec-45dd-aaba-93956e072300.TABLE:LAB1917TAPOIMARIUS.PUBLIC.GAME" target="c6a3d151-13ec-45dd-aaba-93956e072300.TABLE:LAB1917TAPOIMARIUS.PUBLIC.DEVELOPER" relationship="REFERENCES">
+      <point x="0.0" y="-93.5" />
+      <point x="0.0" y="82.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="1.0" showDependencies="false" x="112.5" y="203.5" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Columns</Category>
+    <Category>Comments</Category>
+    <Category>Key columns</Category>
+    <Category>Virtual foreign keys</Category>
+  </Categories>
+</Diagram>
+
