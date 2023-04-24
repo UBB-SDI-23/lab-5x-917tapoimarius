@@ -21,6 +21,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "http://localhost:80")
+@RequestMapping("/api")
 @RestController
 public class Controller {
     @Autowired
