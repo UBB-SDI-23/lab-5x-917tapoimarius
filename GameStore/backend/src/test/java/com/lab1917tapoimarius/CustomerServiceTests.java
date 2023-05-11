@@ -52,11 +52,11 @@ public class CustomerServiceTests {
         Developer d2 = new Developer("EA Sports", "Redwood City, USA", "EA Games", 1991, 7377);
         d2.setId(2l);
 
-        Game g1 = new Game("GTA V", "action", "SP & MP", 2013, 29.99, d1);
+        Game g1 = new Game("GTA V", "action", "SP & MP", 2013, 29.99, d1, "");
         g1.setId(1l);
-        Game g2 = new Game("RDR2", "action", "SP & MP", 2018, 59.99, d1);
+        Game g2 = new Game("RDR2", "action", "SP & MP", 2018, 59.99, d1, "");
         g2.setId(2l);
-        Game g3 = new Game("FIFA 23", "sports", "SP & MP", 2022, 59.99, d2);
+        Game g3 = new Game("FIFA 23", "sports", "SP & MP", 2022, 59.99, d2, "");
         g3.setId(3l);
 
         Customer c1 = new Customer("Marius", "Tapoi", "tapoimarius@yahoo.com", "Bistrita, Romania", "+40740673612");
@@ -95,14 +95,14 @@ public class CustomerServiceTests {
 
         when(developerRepository.findAll()).thenReturn(devList);
 
-        when(transactionService.getAllTransaction()).thenReturn(transactionList);
+        when(transactionService.getAll(0)).thenReturn(transactionList);
 
         CustomerSpendingByDeveloperDTO c1dto = new CustomerSpendingByDeveloperDTO("Marius Tapoi", "Tapoi", 149.97);
         CustomerSpendingByDeveloperDTO c2dto = new CustomerSpendingByDeveloperDTO("Andrei Radacina", "Radacina", 29.99);
         CustomerSpendingByDeveloperDTO c3dto = new CustomerSpendingByDeveloperDTO("Dominic Cont", "Cont", 179.96);
 
         List<CustomerSpendingByDeveloperDTO> customerSpendingByDeveloperDTOList = Arrays.asList(c3dto, c1dto);
-        List<CustomerSpendingByDeveloperDTO> requiredCustomers = customerService.getCustomerSpendingByDeveloperReport(transactionService, 100d);
+        List<CustomerSpendingByDeveloperDTO> requiredCustomers = customerService.getCustomerSpendingByDeveloperReport(transactionService, 100d, 0);
         assertEquals(customerSpendingByDeveloperDTOList.get(0).getCustomerName(), requiredCustomers.get(0).getCustomerName());
         assertEquals(customerSpendingByDeveloperDTOList.get(1).getCustomerName(), requiredCustomers.get(1).getCustomerName());
         assertFalse(Arrays.asList(requiredCustomers).contains(c2dto));

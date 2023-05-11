@@ -8,13 +8,7 @@ import { DeveloperForm } from "./DeveloperForm";
 export const AddDeveloper = () => {
 	const navigate = useNavigate();
 
-	const [developer, setDeveloper] = useState<Developer>({
-        name: "",
-        hq: "",
-        publisher: "",
-        foundedIn: 0,
-        revenue: 0
-	});
+	const [developer, setDeveloper] = useState<Developer>(new Developer());
 
 	
 

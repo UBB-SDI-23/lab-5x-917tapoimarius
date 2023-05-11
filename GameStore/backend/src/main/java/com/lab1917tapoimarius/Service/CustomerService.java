@@ -7,7 +7,9 @@ import com.lab1917tapoimarius.Model.Developer;
 import com.lab1917tapoimarius.Model.Transaction;
 import com.lab1917tapoimarius.Repository.CustomerRepository;
 import com.lab1917tapoimarius.Repository.TransactionRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -15,46 +17,52 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class CustomerService {
+@Transactional
+public class CustomerService extends EntityService<Customer>{
     @Autowired
-    private CustomerRepository customerRepository;
-
-    public CustomerService(CustomerRepository customerRepository) {
-        this.customerRepository = customerRepository;
-    }
-    public Customer getCustomerById(Long id) {
-        return customerRepository.findById(id).orElseThrow(() ->new NotFoundException(id));
-    }
-    public List<Customer> getAllCustomer(){
-        return customerRepository.findAll();
+    public CustomerService(CustomerRepository repository) {
+        super(repository);
     }
 
-    public void addCustomer(Customer newCustomer){
-        customerRepository.save(newCustomer);
+    public List<Customer> getCustomersByFirstNameLastNameEmail(String query) {
+        CustomerRepository customerRepository = (CustomerRepository) repository;
+        PageRequest pageRequest = PageRequest.of(0, 20);
+
+        String[] queryStrings = query.split(" ");
+        Integer length = queryStrings.length;
+
+        String firstName = queryStrings[0];
+        if (length < 2)
+            return customerRepository.findByFirstnameContainingIgnoreCase(firstName, pageRequest);
+
+        String lastName = queryStrings[1];
+        if (length < 3)
+            return customerRepository.findByFirstnameContainingIgnoreCaseAndLastnameContainingIgnoreCase(firstName, lastName, pageRequest);
+
+        String email = queryStrings[2];
+        return customerRepository.findByFirstnameContainingIgnoreCaseAndLastnameContainingIgnoreCaseAndEmailContaining(
+                firstName, lastName, email, pageRequest
+        );
     }
 
-    public void updateCustomer(Customer newCustomer, Long id){
-        customerRepository.findById(id).map(display -> {
+    public void update(Customer newCustomer, Long id){
+        repository.findById(id).map(display -> {
             display.setFirstname(newCustomer.getFirstname());
             display.setLastname(newCustomer.getLastname());
             display.setEmail(newCustomer.getEmail());
             display.setAddress(newCustomer.getAddress());
             display.setPhoneNumber(newCustomer.getPhoneNumber());
-            return customerRepository.save(display);
+            return repository.save(display);
         }).orElseGet(()->{
             newCustomer.setId(id);
-            return customerRepository.save(newCustomer);
+            return repository.save(newCustomer);
         });
     }
 
-    public void deleteCustomer(Long id){
-        customerRepository.deleteById(id);
-    }
-
-    public List<CustomerSpendingByDeveloperDTO> getCustomerSpendingByDeveloperReport(TransactionService transactionService, Double spent){
+    public List<CustomerSpendingByDeveloperDTO> getCustomerSpendingByDeveloperReport(TransactionService transactionService, Double spent, Integer pageNumber){
         List<CustomerSpendingByDeveloperDTO> reportData = new ArrayList<>();
-        List<Customer> customers = customerRepository.findAll(Sort.by("lastname").ascending());
-        List<Transaction> transactionsList = transactionService.getAllTransaction();
+        List<Customer> customers = repository.findAll(Sort.by("lastname").ascending());
+        List<Transaction> transactionsList = transactionService.getAll(pageNumber);
 
         for (Customer customer : customers) {
             List<Transaction> transactions = transactionsList.stream().filter(t -> Objects.equals(t.getCustomerEntity().getId(), customer.getId())).toList();

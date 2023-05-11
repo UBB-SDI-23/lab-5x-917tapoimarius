@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {Game} from "../../models/Game";
+import {Customer} from '../../models/Customer';
 import {
     Table,
     TableBody,
@@ -19,76 +19,45 @@ import {
     CircularProgress,
     TableSortLabel
 } from "@mui/material";
+import Pagination from '../pagination/Pagination'
 import AddIcon from "@mui/icons-material/Add";
 import DeleteForeverIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit"
 import {Link} from "react-router-dom";
 import {BACKEND_API_URL} from "../../constants";
-import Pagination from "../pagination/Pagination";
+import {inherits} from "util";
 
-function GetAllGames() {
-    const [games,
-        setGames] = useState < Game[] > ([]);
+function GetAllCustomer() {
+    const [customers,
+        setCustomers] = useState < Customer[] > ([]);
     const [loading,
         setLoading] = useState(false);
-    const [price,
-        setPrice] = useState(-1);
     const [currentPage,
         setCurrentPage] = useState(1);
-    const [sortOrder,
-        setSortOrder] = useState < "asc" | "desc" > ("asc");
     const [count,
         setCount] = useState(1);
     const [pageVal, setPageVal] = useState(1);
 
-    const handleSort = () => {
-        setSortOrder(sortOrder === "asc"
-                ? "desc"
-                : "asc");
-        if (sortOrder == "asc") {
-            games.sort((a, b) => a.yearOfRelease - b.yearOfRelease);
-        } else {
-            games.sort((b, a) => a.yearOfRelease - b.yearOfRelease);
-        }
-
-    };
-
-    const handlePriceTextFIeld = (event : React.ChangeEvent < HTMLInputElement | HTMLTextAreaElement >) => {
-        const inputtedPrice = Number(event.target.value);
-        if (!isNaN(inputtedPrice)) {
-            setPrice(Number(inputtedPrice));
-        } else {
-            setPrice(-1);
-        }
-    }
 
     useEffect(() => {
         setLoading(true);
-        
-        if (price == -1) {
-            fetch(`${BACKEND_API_URL}/games/count`)
-                .then(res => res.json())
-                .then(data => setCount(data));
-            fetch(`${BACKEND_API_URL}/games/byPage/${currentPage - 1}`)
-                .then(res => res.json())
-                .then(data => {
-                    setGames(data);
-                    setLoading(false);
-                })
-        } else {
-            fetch(`${BACKEND_API_URL}/games/getWithPriceHigherThan/${currentPage}?price=${price}`)
-                .then(res => res.json())
-                .then(data => {
-                    setGames(data);
-                    setLoading(false);
-                })
-        }
-    }, [price, currentPage]);
+        fetch(`${BACKEND_API_URL}/customers/count`)
+            .then(res => res.json())
+            .then(data => setCount(data));
+        fetch(`${BACKEND_API_URL}/customers/byPage/${currentPage - 1}`)
+            .then(res => res.json())
+            .then(data => {
+                setCustomers(data);
+                setLoading(false);
+            })
+
+    }, [currentPage]);
+
     return (
         <Container sx={{
             marginTop: "40px",
         }}>
-            <Typography variant="h3" color="black" align="left">All Games</Typography>
+            <Typography variant="h3" color="black" align="left">All Customers</Typography>
             {(
                 <List
                     sx={{
@@ -99,29 +68,18 @@ function GetAllGames() {
                     <ListItem sx={{
                         width: "auto"
                     }}>
-                        <Button variant="outlined" component={Link} to={`/games/add`}>
-                            + Add a new game
+                        <Button variant="outlined" component={Link} to={`/customers/add`}>
+                            + Add new customer
                         </Button>
-                    </ListItem>
-                    <ListItem sx={{
-                        width: "auto"
-                    }}>
-                        <TextField
-                            id="filter"
-                            label="Having a price higher than:"
-                            fullWidth
-                            sx={{
-                            mb: 2
-                        }}
-                            onChange={(event) => {
-                            handlePriceTextFIeld(event);
-                        }}></TextField>
+                        <Button variant="outlined" component={Link} to={`/customers/customersSpent`}>
+                            Get customers sorted by the money they spent on games.
+                        </Button>
                     </ListItem>
                 </List>
             )}
             {!loading && (
                 <TableContainer component={Paper} >
-                    <List
+                      <List
                         sx={{
                         display: "flex",
                         flexDirection: "row",
@@ -160,55 +118,43 @@ function GetAllGames() {
                             <TableRow>
                                 <TableCell>#</TableCell>
                                 <TableCell>
-                                    Name
+                                    First Name
                                 </TableCell>
                                 <TableCell>
-                                    Genre
+                                    Last Name
                                 </TableCell>
                                 <TableCell>
-                                    Modes
+                                    Email
                                 </TableCell>
                                 <TableCell>
-                                    <TableSortLabel
-                                        direction={sortOrder}
-                                        onClick={() => handleSort()}>
-                                        Year of Release
-                                    </TableSortLabel>
+                                    Address
                                 </TableCell>
                                 <TableCell>
-                                    Price
+                                    Phone number
                                 </TableCell>
                                 <TableCell>
-                                    Descritpion
-                                </TableCell>
-                                <TableCell>
-                                    Developer
-                                </TableCell>
-                                <TableCell>
-                                    Bought Games
+                                    Number of purchased games
                                 </TableCell>
                                 <TableCell>Operations</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {games.map((game : Game, index) => (
+                            {customers.map((customer : Customer, index) => (
                                 <TableRow key={index}>
                                     <TableCell>{index + 1}</TableCell>
-                                    <TableCell>{game.name}</TableCell>
-                                    <TableCell>{game.genre}</TableCell>
-                                    <TableCell>{game.modes}</TableCell>
-                                    <TableCell>{game.yearOfRelease}</TableCell>
-                                    <TableCell>{game.price}</TableCell>
-                                    <TableCell>{game.description}</TableCell>
-                                    <TableCell>{game.developerEntity.name}</TableCell>
-                                    <TableCell>{game.totalNumberOfBoughtQuantity}</TableCell>
+                                    <TableCell>{customer.firstname}</TableCell>
+                                    <TableCell>{customer.lastname}</TableCell>
+                                    <TableCell>{customer.email}</TableCell>
+                                    <TableCell>{customer.address}</TableCell>
+                                    <TableCell>{customer.phoneNumber}</TableCell>
+                                    <TableCell>{customer.totalNumberOfBoughtGames}</TableCell>
                                     <TableCell>
                                         <IconButton
                                             component={Link}
                                             sx={{
                                             mr: 3
                                         }}
-                                            to={`/games/delete/${game.id}`}>
+                                            to={`/customers/delete/${customer.id}`}>
                                             <Tooltip title="Delete" arrow>
                                                 <DeleteForeverIcon
                                                     sx={{
@@ -221,7 +167,7 @@ function GetAllGames() {
                                             sx={{
                                             mr: 3
                                         }}
-                                            to={`/games/update/${game.id}`}>
+                                            to={`/customers/update/${customer.id}`}>
                                             <Tooltip title="Update" arrow>
                                                 <EditIcon/>
                                             </Tooltip>
@@ -268,4 +214,4 @@ function GetAllGames() {
     );
 }
 
-export default GetAllGames
+export default GetAllCustomer;

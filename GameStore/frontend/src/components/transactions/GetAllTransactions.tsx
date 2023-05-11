@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {Game} from "../../models/Game";
+import {Transaction} from "../../models/Transaction";
 import {
     Table,
     TableBody,
@@ -19,76 +19,45 @@ import {
     CircularProgress,
     TableSortLabel
 } from "@mui/material";
+import Pagination from '../pagination/Pagination'
 import AddIcon from "@mui/icons-material/Add";
 import DeleteForeverIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit"
 import {Link} from "react-router-dom";
 import {BACKEND_API_URL} from "../../constants";
-import Pagination from "../pagination/Pagination";
+import { Game } from "../../models/Game";
 
-function GetAllGames() {
-    const [games,
-        setGames] = useState < Game[] > ([]);
+function GetAllTransactions() {
+    const [transactions,
+        setTransactions] = useState < Transaction[] > ([]);
     const [loading,
         setLoading] = useState(false);
-    const [price,
-        setPrice] = useState(-1);
     const [currentPage,
         setCurrentPage] = useState(1);
-    const [sortOrder,
-        setSortOrder] = useState < "asc" | "desc" > ("asc");
     const [count,
         setCount] = useState(1);
     const [pageVal, setPageVal] = useState(1);
 
-    const handleSort = () => {
-        setSortOrder(sortOrder === "asc"
-                ? "desc"
-                : "asc");
-        if (sortOrder == "asc") {
-            games.sort((a, b) => a.yearOfRelease - b.yearOfRelease);
-        } else {
-            games.sort((b, a) => a.yearOfRelease - b.yearOfRelease);
-        }
-
-    };
-
-    const handlePriceTextFIeld = (event : React.ChangeEvent < HTMLInputElement | HTMLTextAreaElement >) => {
-        const inputtedPrice = Number(event.target.value);
-        if (!isNaN(inputtedPrice)) {
-            setPrice(Number(inputtedPrice));
-        } else {
-            setPrice(-1);
-        }
-    }
 
     useEffect(() => {
         setLoading(true);
-        
-        if (price == -1) {
-            fetch(`${BACKEND_API_URL}/games/count`)
-                .then(res => res.json())
-                .then(data => setCount(data));
-            fetch(`${BACKEND_API_URL}/games/byPage/${currentPage - 1}`)
-                .then(res => res.json())
-                .then(data => {
-                    setGames(data);
-                    setLoading(false);
-                })
-        } else {
-            fetch(`${BACKEND_API_URL}/games/getWithPriceHigherThan/${currentPage}?price=${price}`)
-                .then(res => res.json())
-                .then(data => {
-                    setGames(data);
-                    setLoading(false);
-                })
-        }
-    }, [price, currentPage]);
+        fetch(`${BACKEND_API_URL}/transactions/count`)
+            .then(res => res.json())
+            .then(data => setCount(data));
+        fetch(`${BACKEND_API_URL}/transactions/byPage/${currentPage - 1}`)
+            .then(res => res.json())
+            .then(data => {
+                setTransactions(data);
+                setLoading(false);
+            })
+
+    }, [currentPage]);
+
     return (
         <Container sx={{
             marginTop: "40px",
         }}>
-            <Typography variant="h3" color="black" align="left">All Games</Typography>
+            <Typography variant="h3" color="black" align="left">All Transactions</Typography>
             {(
                 <List
                     sx={{
@@ -99,29 +68,16 @@ function GetAllGames() {
                     <ListItem sx={{
                         width: "auto"
                     }}>
-                        <Button variant="outlined" component={Link} to={`/games/add`}>
-                            + Add a new game
+                        <Button variant="outlined" component={Link} to={`/transactions/add`}>
+                            + Add new transaction
                         </Button>
-                    </ListItem>
-                    <ListItem sx={{
-                        width: "auto"
-                    }}>
-                        <TextField
-                            id="filter"
-                            label="Having a price higher than:"
-                            fullWidth
-                            sx={{
-                            mb: 2
-                        }}
-                            onChange={(event) => {
-                            handlePriceTextFIeld(event);
-                        }}></TextField>
                     </ListItem>
                 </List>
             )}
+            {loading && <CircularProgress/>}
             {!loading && (
                 <TableContainer component={Paper} >
-                    <List
+                      <List
                         sx={{
                         display: "flex",
                         flexDirection: "row",
@@ -160,55 +116,39 @@ function GetAllGames() {
                             <TableRow>
                                 <TableCell>#</TableCell>
                                 <TableCell>
-                                    Name
+                                    Game
                                 </TableCell>
                                 <TableCell>
-                                    Genre
+                                    Customer
                                 </TableCell>
                                 <TableCell>
-                                    Modes
+                                    Format
                                 </TableCell>
                                 <TableCell>
-                                    <TableSortLabel
-                                        direction={sortOrder}
-                                        onClick={() => handleSort()}>
-                                        Year of Release
-                                    </TableSortLabel>
+                                    Quantity
                                 </TableCell>
                                 <TableCell>
-                                    Price
-                                </TableCell>
-                                <TableCell>
-                                    Descritpion
-                                </TableCell>
-                                <TableCell>
-                                    Developer
-                                </TableCell>
-                                <TableCell>
-                                    Bought Games
+                                    Checkout
                                 </TableCell>
                                 <TableCell>Operations</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {games.map((game : Game, index) => (
+                            {transactions.map((transaction : Transaction, index) => (
                                 <TableRow key={index}>
                                     <TableCell>{index + 1}</TableCell>
-                                    <TableCell>{game.name}</TableCell>
-                                    <TableCell>{game.genre}</TableCell>
-                                    <TableCell>{game.modes}</TableCell>
-                                    <TableCell>{game.yearOfRelease}</TableCell>
-                                    <TableCell>{game.price}</TableCell>
-                                    <TableCell>{game.description}</TableCell>
-                                    <TableCell>{game.developerEntity.name}</TableCell>
-                                    <TableCell>{game.totalNumberOfBoughtQuantity}</TableCell>
+                                    <TableCell>{transaction.gameEntity.name}</TableCell>
+                                    <TableCell>{transaction.customerEntity.firstname} {transaction.customerEntity.lastname}</TableCell>
+                                    <TableCell>{transaction.format}</TableCell>
+                                    <TableCell>{transaction.quantity}</TableCell>
+                                    <TableCell>{transaction.checkout}</TableCell>
                                     <TableCell>
                                         <IconButton
                                             component={Link}
                                             sx={{
                                             mr: 3
                                         }}
-                                            to={`/games/delete/${game.id}`}>
+                                            to={`/transactions/delete/${transaction.id}`}>
                                             <Tooltip title="Delete" arrow>
                                                 <DeleteForeverIcon
                                                     sx={{
@@ -221,7 +161,7 @@ function GetAllGames() {
                                             sx={{
                                             mr: 3
                                         }}
-                                            to={`/games/update/${game.id}`}>
+                                            to={`/transactions/update/${transaction.id}`}>
                                             <Tooltip title="Update" arrow>
                                                 <EditIcon/>
                                             </Tooltip>
@@ -250,6 +190,7 @@ function GetAllGames() {
                                 id="page"
                                 label="Page:"
                                 type="number"
+                                value={pageVal}
                                 sx={{
                                 mb: 2
                             }}
@@ -268,4 +209,4 @@ function GetAllGames() {
     );
 }
 
-export default GetAllGames
+export default GetAllTransactions;

@@ -18,7 +18,7 @@ export const GameForm = (
     const fetchSuggestions = async(query: string) => {
 		try{
 			const response = await axios.get<Developer[]>(
-				`${BACKEND_API_URL}/developers/`
+				`${BACKEND_API_URL}/developers/autocomplete?query=${query}`
 			);
 			const data = await response.data;
 			setDevelopers(data);
@@ -26,18 +26,6 @@ export const GameForm = (
 			console.error("Error fetching suggestions:", error);
 		}
 	}
-    
-
-	useEffect(() => {
-		fetch(`${BACKEND_API_URL}/developers/`)
-		  .then(res => res.json())
-		  .then(data => {
-                setDevelopers(data);
-          })
-        }, []);
-
-    const [selectedVal, setSelectedVal] = useState(0);
-
     const debouncedFetchSuggestions = useCallback(debounce(fetchSuggestions, 500), []);
 
 	useEffect(() => {
@@ -58,10 +46,10 @@ export const GameForm = (
 		<Container>
 			<Card>
 				<CardContent>
-					<IconButton component={Link} to={`/games`} sx={{float: "left"}}>
+					<IconButton component={Link} to={`/games/`} sx={{float: "left"}}>
 						<ArrowBackIcon/>
 					</IconButton>
-					<IconButton component={Link} sx={{ mr: 3 }} to={`/games`}>
+					<IconButton component={Link} sx={{ mr: 3 }} to={`/games/`}>
 					</IconButton>{" "}
 					<form onSubmit={apiCallMethod}>
 						<TextField
@@ -109,22 +97,29 @@ export const GameForm = (
 							sx={{ mb: 2 }}
 							onChange={(event) => setGame({ ...game, price: Number(event.target.value) })}
 						/>
+						<TextField
+							id="description"
+							label="Description"
+							variant="outlined"
+                            value={game.description}
+							fullWidth
+							sx={{ mb: 2 }}
+							onChange={(event) => setGame({ ...game, description: event.target.value })}
+						/>
                         <InputLabel sx={{float: "left"}}>
 								Developer:
 						</InputLabel>
                         <Autocomplete
-							id="developer"
+							id="developerEntity"
                             options={developers}
+							value={game.developerEntity}
 							getOptionLabel={(option) => `${option.name} ${option.hq}`}
 							renderInput={(params) => <TextField {...params} label="name, hq" variant="outlined" />}
 							filterOptions={(x) => x}
 							onInputChange={handleInputChange}
 							onChange={(event, value) => {
 								if (value) {
-									console.log(value);
-                                    console.log(game);
 									setGame({ ...game, developerEntity: value as Developer});
-									console.log(game);
 								}
 							}}
                             />

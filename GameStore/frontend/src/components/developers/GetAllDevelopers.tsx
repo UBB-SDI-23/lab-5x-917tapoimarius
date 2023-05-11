@@ -24,6 +24,7 @@ import EditIcon from "@mui/icons-material/Edit"
 import {Link} from "react-router-dom";
 import {BACKEND_API_URL} from "../../constants";
 import { Developer } from "../../models/Developer";
+import Pagination from "../pagination/Pagination";
 
 function GetAllDevelopers() {
     const [develpoers,
@@ -36,6 +37,7 @@ function GetAllDevelopers() {
         setSortOrder] = useState < "asc" | "desc" > ("asc");
     const [count,
         setCount] = useState(1);
+    const [pageVal, setPageVal] = useState(1);
 
     const handleSort = () => {
         setSortOrder(sortOrder === "asc"
@@ -51,13 +53,15 @@ function GetAllDevelopers() {
 
     useEffect(() => {
         setLoading(true);
-        
-        fetch(`${BACKEND_API_URL}/developers/`)
+        fetch(`${BACKEND_API_URL}/developers/count`)
+            .then(res => res.json())
+            .then(data => setCount(data));
+        fetch(`${BACKEND_API_URL}/developers/byPage/${currentPage - 1}`)
             .then(res => res.json())
             .then(data => {
-                setDevelopers(data);
+                setDevelopers(data)
                 setLoading(false);
-            })
+            });
     }, [currentPage]);
 
     return (
@@ -83,6 +87,37 @@ function GetAllDevelopers() {
             )}
             {!loading && (
                 <TableContainer component={Paper} >
+                    <List
+                        sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        padding: "1px"
+                    }}>
+                        <ListItem>
+                            <Pagination
+                                onPageChange={(page : number) => setCurrentPage(page)}
+                                totalCount={count}
+                                currentPage={currentPage}
+                                pageSize={10}
+                                className="pagination-bar"/>
+                        </ListItem>
+                        <ListItem>
+                            <TextField
+                                id="page"
+                                label="Page:"
+                                type="number"
+                                sx={{
+                                mb: 2
+                            }}
+                                onChange={(event) => {
+                                    setPageVal(Number(event.target.value));
+                                }}
+                                onKeyDown={(event) => {
+                                if (event.key === "Enter") 
+                                    setCurrentPage(pageVal);
+                                }}></TextField>
+                        </ListItem>
+                    </List>
                     <Table>
                         <TableHead
                             sx={{
@@ -109,6 +144,9 @@ function GetAllDevelopers() {
                                         Revenue
                                     </TableSortLabel>
                                 </TableCell>
+                                <TableCell>
+                                    Games
+                                </TableCell>
                                 <TableCell>Operations</TableCell>
                             </TableRow>
                         </TableHead>
@@ -121,6 +159,7 @@ function GetAllDevelopers() {
                                     <TableCell>{developer.publisher}</TableCell>
                                     <TableCell>{developer.foundedIn}</TableCell>
                                     <TableCell>{developer.revenue}</TableCell>
+                                    <TableCell>{developer.gamesCount}</TableCell>
                                     <TableCell>
                                         <IconButton
                                             component={Link}
@@ -150,6 +189,38 @@ function GetAllDevelopers() {
                             ))}
                         </TableBody>
                     </Table>
+                    <List
+                        sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        padding: "1px"
+                    }}>
+                        <ListItem>
+                            <Pagination
+                                onPageChange={(page : number) => setCurrentPage(page)}
+                                totalCount={count}
+                                currentPage={currentPage}
+                                pageSize={10}
+                                className="pagination-bar"/>
+                        </ListItem>
+                        <ListItem>
+                            <TextField
+                                id="page"
+                                label="Page:"
+                                type="number"
+                                value={pageVal}
+                                sx={{
+                                mb: 2
+                            }}
+                                onChange={(event) => {
+                                    setPageVal(Number(event.target.value));
+                                }}
+                                onKeyDown={(event) => {
+                                if (event.key === "Enter") 
+                                    setCurrentPage(pageVal);
+                                }}></TextField>
+                        </ListItem>
+                    </List>
                 </TableContainer>
             )}
         </Container>

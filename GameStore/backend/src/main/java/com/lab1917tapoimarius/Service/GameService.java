@@ -5,68 +5,83 @@ import com.lab1917tapoimarius.Model.Developer;
 import com.lab1917tapoimarius.Model.Game;
 import com.lab1917tapoimarius.Repository.DeveloperRepository;
 import com.lab1917tapoimarius.Repository.GameRepository;
+import jakarta.transaction.Transactional;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class GameService {
+@Transactional
+public class GameService extends EntityService<Game> {
     @Autowired
-    private GameRepository gameRepository;
-
-    @Autowired
-    private DeveloperRepository developerRepository;
-
-    public GameService(GameRepository gameRepository) {
-        this.gameRepository = gameRepository;
+    public GameService(GameRepository repository) {
+        super(repository);
     }
 
-    public Game getGameById(Long id) {
-        return gameRepository.findById(id).orElseThrow(() ->new NotFoundException(id));
-    }
-    public List<Game> getAllGames(){
-        return gameRepository.findAll();
+    public List<Long> getAllGameIds(){
+        return repository.findAll().stream().map(game -> game.getId()).collect(Collectors.toList());
     }
 
-    public void addGame(Game newGame){
-        gameRepository.save(newGame);
+    public List<Game> getGamesByNameGenrePrice(String query){
+        //Get the first 20 results
+        PageRequest pageRequest = PageRequest.of(0, 20);
+        //Cast the repository to GameRepository to access specific methods
+        GameRepository gameRepository = (GameRepository)repository;
+
+        String[] queryFields = query.split(" ");
+        Integer length = queryFields.length;
+
+        String name = queryFields[0];
+        if(length < 2)
+            return gameRepository.getGamesByNameIgnoreCase(name, pageRequest);
+
+        String genre = Arrays.stream(queryFields).skip(1).
+                filter(s -> !StringUtils.isNumeric(s)).collect(Collectors.joining(" "));
+        if(!StringUtils.isNumeric(queryFields[length-1]))
+            return gameRepository.getGamesByNameIgnoreCaseAndGenreIgnoreCase(name, genre, pageRequest);
+
+        Double price = Double.parseDouble(queryFields[length - 1]);
+        return gameRepository.getGamesByNameIgnoreCaseAndGenreIgnoreCaseAndPrice(
+                name, genre, price, pageRequest
+        );
     }
 
-    public void updateGame(Game newSmartphone, Long id){
-        gameRepository.findById(id).map(game -> {
-            game.setName(newSmartphone.getName());
-            game.setGenre(newSmartphone.getGenre());
-            game.setModes(newSmartphone.getModes());
-            game.setYearOfRelease(newSmartphone.getYearOfRelease());
-            game.setPrice(newSmartphone.getPrice());
-            return gameRepository.save(game);
+    public void update(Game newGame, Long id){
+        repository.findById(id).map(game -> {
+            game.setName(newGame.getName());
+            game.setGenre(newGame.getGenre());
+            game.setModes(newGame.getModes());
+            game.setYearOfRelease(newGame.getYearOfRelease());
+            game.setPrice(newGame.getPrice());
+            game.setDeveloper(newGame.getDeveloperEntity());
+            game.setDescription(newGame.getDescription());
+            return repository.save(game);
         }).orElseGet(()->{
-            newSmartphone.setId(id);
-            return gameRepository.save(newSmartphone);
+            newGame.setId(id);
+            return repository.save(newGame);
         });
     }
-
-    public void deleteGame(Long id){
-        gameRepository.deleteById(id);
+    public List<Game> getGameWithPriceHigherThanGivenValue(Double price, Integer pageNumber){
+        return ((GameRepository)repository).findByPriceGreaterThan(price, PageRequest.of(pageNumber, 10));
     }
-    public List<Game> getGameWithPriceHigherThanGivenValue(Double price){
-        return gameRepository.findAll().stream().filter(smartphone -> smartphone.getPrice() > price)
-                .collect(Collectors.toList());
-    }
-
-    public List<Game> addMultipleGames(List<Game> gameRequests, long id){
-        List<Game> games = new ArrayList<>();
-        Developer developer = developerRepository.findById(id).orElseThrow(() ->new NotFoundException(id));
-        for (Game gameRequest : gameRequests) {
-            Game game = new Game(gameRequest.getName(), gameRequest.getGenre(), gameRequest.getModes(), gameRequest.getYearOfRelease(),
-                    gameRequest.getPrice(), developer);
-            game = gameRepository.save(game);
-            games.add(game);
-        }
-        return games;
-    }
+//
+//    public List<Game> addMultipleGames(List<Game> gameRequests, long id){
+//        List<Game> games = new ArrayList<>();
+//        Developer developer = developerRepository.findById(id).orElseThrow(() ->new NotFoundException(id));
+//        for (Game gameRequest : gameRequests) {
+//            Game game = new Game(gameRequest.getName(), gameRequest.getGenre(), gameRequest.getModes(), gameRequest.getYearOfRelease(),
+//                    gameRequest.getPrice(), developer);
+//            game = gameRepository.save(game);
+//            games.add(game);
+//        }
+//        return games;
+//    }
 }

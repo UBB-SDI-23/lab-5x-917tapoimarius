@@ -9,14 +9,7 @@ import { GameForm } from "./GameForm";
 export const AddGame = () => {
 	const navigate = useNavigate();
 
-	const [game, setGame] = useState<Game>({
-        name: "",
-        genre: "",
-        modes:  "",
-        yearOfRelease: 0,
-        price: 0,
-        developerEntity: new Developer()
-	});
+	const [game, setGame] = useState<Game>(new Game());
 
 	
 

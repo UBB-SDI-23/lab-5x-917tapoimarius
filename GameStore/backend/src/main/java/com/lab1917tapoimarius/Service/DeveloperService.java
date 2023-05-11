@@ -1,48 +1,58 @@
 package com.lab1917tapoimarius.Service;
 
-import com.lab1917tapoimarius.Exception.NotFoundException;
 import com.lab1917tapoimarius.Model.Developer;
 import com.lab1917tapoimarius.Repository.DeveloperRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
-public class DeveloperService {
+@Transactional
+public class DeveloperService extends EntityService<Developer> {
+
     @Autowired
-    private DeveloperRepository developerRepository;
-
-    public DeveloperService(DeveloperRepository developerRepository) {
-        this.developerRepository = developerRepository;
+    public DeveloperService(DeveloperRepository repository) {
+        super(repository);
     }
 
-    public Developer getDeveloperById(Long id) {
-        return developerRepository.findById(id).orElseThrow(() ->new NotFoundException(id));
+    public List<Long> getAllDevelopersId() {
+        return repository.findAll().stream().map(developer -> developer.getId()).collect(Collectors.toList());
     }
-    public List<Developer> getAllDeveloper(){
-        return developerRepository.findAll();
+    public List<Developer> getDeveloperByNameHq(String query){
+        String name, hq;
+        String[] hqArray;
+
+        DeveloperRepository developerRepository = (DeveloperRepository) repository;
+        Pageable pageable = PageRequest.of(0, 20);
+
+        name = query.split("[0-9]")[0].strip();
+        String nameAndRestString = query.substring(name.length());
+        hqArray = nameAndRestString.split(" ");
+        if(hqArray.length < 2)
+            return developerRepository.findByNameContainingIgnoreCase(name, pageable);
+
+        hq = hqArray[1];
+
+        return ((DeveloperRepository) repository).findByNameContainingIgnoreCaseAndHqContainingIgnoreCase(
+                name, hq, PageRequest.of(0, 20));
     }
 
-    public void addDeveloper(Developer newDeveloper){
-        developerRepository.save(newDeveloper);
-    }
-
-    public void updateDeveloper(Developer newDeveloper, Long id){
-        developerRepository.findById(id).map(display -> {
+    public void update(Developer newDeveloper, Long id){
+        repository.findById(id).map(display -> {
             display.setName(newDeveloper.getName());
             display.setHq(newDeveloper.getHq());
             display.setPublisher(newDeveloper.getPublisher());
             display.setFoundedIn(newDeveloper.getFoundedIn());
             display.setRevenue(newDeveloper.getRevenue());
-            return developerRepository.save(display);
+            return repository.save(display);
         }).orElseGet(()->{
             newDeveloper.setId(id);
-            return developerRepository.save(newDeveloper);
+            return repository.save(newDeveloper);
         });
-    }
-
-    public void deleteDeveloper(Long id){
-        developerRepository.deleteById(id);
     }
 }

@@ -3,15 +3,16 @@ package com.lab1917tapoimarius.Model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import org.hibernate.annotations.Formula;
 
 import java.util.Set;
 
 @Entity
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "relationClass"})
+//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "relationClass"})
 //@Table(name = "DEVELOPER")
 public class Developer {
     //@Column
-    private @Id @GeneratedValue Long id;
+    private @Id @GeneratedValue(strategy = GenerationType.IDENTITY) Long id;
     //@Column
     private String name;
     //@Column
@@ -23,9 +24,12 @@ public class Developer {
     //@Column
     private Integer revenue;
 
-    @OneToMany(mappedBy = "developer")
-    @JsonIgnore
-    private Set<Game> games;
+    @Formula("(SELECT COUNT(*) FROM game WHERE game.developer_id = id)")
+    private Integer gamesCount;
+
+//    @OneToMany(mappedBy = "developer")
+//    @JsonIgnore
+//    private Set<Game> games;
 
     public Developer() {
     }
@@ -85,13 +89,17 @@ public class Developer {
     public void setRevenue(Integer revenue) {
         this.revenue = revenue;
     }
+//
+//    public Set<Game> getGames() {
+//        return games;
+//    }
+//
+//    public void setGames(Set<Game> games) {
+//        this.games = games;
+//    }
 
-    public Set<Game> getGames() {
-        return games;
-    }
-
-    public void setGames(Set<Game> games) {
-        this.games = games;
+    public Integer getGamesCount() {
+        return gamesCount;
     }
 
     @Override

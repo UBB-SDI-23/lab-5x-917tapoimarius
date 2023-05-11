@@ -5,4 +5,5 @@ export class Developer{
     publisher: string = "";
     foundedIn: number = 0;
     revenue: number = 0;
+    gamesCount: number = 0;
 }

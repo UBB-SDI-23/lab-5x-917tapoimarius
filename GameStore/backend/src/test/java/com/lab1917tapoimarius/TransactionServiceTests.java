@@ -36,9 +36,9 @@ public class TransactionServiceTests {
         Developer d1 = new Developer("Rockstar Games", "New York, USA", "Take-Two Interactive", 1998, 63);
         Developer d2 = new Developer("EA Sports", "Redwood City, USA", "EA Games", 1991, 7377);
 
-        Game g1 = new Game("GTA V", "action", "SP & MP", 2013, 29.99, d1);
-        Game g2 = new Game("RDR2", "action", "SP & MP", 2018, 59.99, d1);
-        Game g3 = new Game("FIFA 23", "sports", "SP & MP", 2022, 59.99, d2);
+        Game g1 = new Game("GTA V", "action", "SP & MP", 2013, 29.99, d1,"");
+        Game g2 = new Game("RDR2", "action", "SP & MP", 2018, 59.99, d1, "");
+        Game g3 = new Game("FIFA 23", "sports", "SP & MP", 2022, 59.99, d2, "");
 
         Customer c1 = new Customer("Marius", "Tapoi", "tapoimarius@yahoo.com", "Bistrita, Romania", "+40740673612");
         Customer c2 = new Customer("Andrei", "Radacina", "radacainandrei@gmail.com", "Bistrita, Romania", "+40740287286");
@@ -58,7 +58,7 @@ public class TransactionServiceTests {
         TransactionDTO t3dto = new TransactionDTO("Dominic", "Cont", 179.97);
 
         List<TransactionDTO> transactionDTOList = Arrays.asList(t3dto, t1dto, t2dto);
-        List<TransactionDTO> requiredTransactions = transactionService.getCustomersOrderedByMoneySpent();
+        List<TransactionDTO> requiredTransactions = transactionService.getCustomersOrderedByMoneySpent(0);
         assertSame(transactionDTOList.get(0).getFirstname(), requiredTransactions.get(0).getFirstname());
         assertSame(transactionDTOList.get(1).getFirstname(), requiredTransactions.get(1).getFirstname());
         assertSame(transactionDTOList.get(2).getFirstname(), requiredTransactions.get(2).getFirstname());

@@ -5,18 +5,20 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import org.hibernate.annotations.Formula;
 
 @Entity
 //@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "relationClass"})
+//@Table(name = "TRANSACTION")
 public class Transaction {
     private @Id
-    @GeneratedValue Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY) Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "game_id")
     private Game game;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "customer_id")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Customer customerEntity;
@@ -24,6 +26,12 @@ public class Transaction {
     private String format;
 
     private Integer quantity;
+
+    @Formula("(SELECT transaction.quantity*game.price\n" +
+            "FROM transaction INNER JOIN game ON transaction.game_id = game.id\n" +
+            "INNER JOIN customer ON transaction.customer_id = customer.id\n" +
+            "WHERE transaction.id = id)")
+    private Double checkout;
 
     public Transaction() {
     }
@@ -78,4 +86,8 @@ public class Transaction {
     public Game getGameEntity(){return game;}
 
     public Customer getCustomerEntity(){return customerEntity;}
+
+    public Double getCheckout() {
+        return checkout;
+    }
 }

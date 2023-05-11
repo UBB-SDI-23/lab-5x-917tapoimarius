@@ -7,5 +7,7 @@ export class Game{
     modes: string = "";
     yearOfRelease: number = 0;
     price: number = 0;
+    description: string = "";
     developerEntity: Developer = new Developer();
+    totalNumberOfBoughtQuantity: number = 0;
 }

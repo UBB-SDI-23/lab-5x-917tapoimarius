@@ -18,14 +18,7 @@ export const UpdateGame = () => {
             })
     }, []);;
 
-    const [game, setGame] = useState<Game>({
-        name: "",
-        genre: "",
-        modes:  "",
-        yearOfRelease: 0,
-        price: 0,
-        developerEntity: new Developer()
-	});
+    const [game, setGame] = useState<Game>(new Game());
 
 	const updateGame = async (event: { preventDefault: () => void }) => {
 		event.preventDefault();

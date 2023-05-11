@@ -3,13 +3,14 @@ package com.lab1917tapoimarius.Model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import org.hibernate.annotations.Formula;
 
 @Entity
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "relationClass"})
 //@Table(name = "GAME")
 public class Game {
     //@Column
-    private @Id @GeneratedValue Long id;
+    private @Id @GeneratedValue(strategy = GenerationType.IDENTITY) Long id;
     //@Column
     private String name;
     //Column
@@ -21,21 +22,30 @@ public class Game {
     //@Column
     private Double price;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JsonIgnore
-    @JoinColumn(name = "dev_id")
+    @JoinColumn(name = "developer_id")
     private Developer developer;
+
+    String description;
+
+    @Formula("(SELECT sum(transaction.quantity)\n" +
+            "FROM transaction INNER JOIN game ON transaction.game_id = game.id\n" +
+            "WHERE game.id = id)")
+    private Integer totalNumberOfBoughtQuantity;
+
 
     public Game() {
     }
 
-    public Game(String name, String genre, String modes, Integer yearOfRelease, Double price, Developer developer) {
+    public Game(String name, String genre, String modes, Integer yearOfRelease, Double price, Developer developer, String description) {
         this.name = name;
         this.genre = genre;
         this.modes = modes;
         this.yearOfRelease = yearOfRelease;
         this.price = price;
         this.developer = developer;
+        this.description = description;
     }
 
     public Long getId() {
@@ -96,6 +106,18 @@ public class Game {
 
     public Developer getDeveloperEntity(){
         return developer;
+    }
+
+    public Integer getTotalNumberOfBoughtQuantity() {
+        return totalNumberOfBoughtQuantity;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override

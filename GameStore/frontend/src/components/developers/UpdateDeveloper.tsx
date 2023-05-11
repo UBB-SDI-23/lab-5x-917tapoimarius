@@ -17,13 +17,7 @@ export const UpdateDeveloper = () => {
             })
     }, []);;
 
-    const [developer, setDeveloper] = useState<Developer>({
-        name: "",
-        hq: "",
-        publisher: "",
-        foundedIn: 0,
-        revenue: 0
-	});
+    const [developer, setDeveloper] = useState<Developer>(new Developer());
 
 	const updateDeveloper = async (event: { preventDefault: () => void }) => {
 		event.preventDefault();

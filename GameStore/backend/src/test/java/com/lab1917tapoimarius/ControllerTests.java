@@ -54,9 +54,9 @@ class ControllerTests {
         Developer d1 = new Developer("Rockstar Games", "New York, USA", "Take-Two Interactive", 1998, 63);
         Developer d2 = new Developer("EA Sports", "Redwood City, USA", "EA Games", 1991, 7377);
 
-        Game g1 = new Game("GTA V", "action", "SP & MP", 2013, 29.99, d1);
-        Game g2 = new Game("RDR2", "action", "SP & MP", 2018, 59.99, d1);
-        Game g3 = new Game("FIFA 23", "sports", "SP & MP", 2022, 59.99, d2);
+        Game g1 = new Game("GTA V", "action", "SP & MP", 2013, 29.99, d1, "");
+        Game g2 = new Game("RDR2", "action", "SP & MP", 2018, 59.99, d1, "");
+        Game g3 = new Game("FIFA 23", "sports", "SP & MP", 2022, 59.99, d2, "");
 
         gameList = Arrays.asList(g2, g3);
 
@@ -78,7 +78,7 @@ class ControllerTests {
 //
 //        gameList = Arrays.asList(g2, g3);
 
-        when(gameService.getGameWithPriceHigherThanGivenValue(40d)).thenReturn(gameList);
+        when(gameService.getGameWithPriceHigherThanGivenValue(40d, 0)).thenReturn(gameList);
         this.mockMvc.perform(get("/games/getWithPriceHigherThan/40"))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -96,7 +96,7 @@ class ControllerTests {
 //
 //        gameList = Arrays.asList(g2, g3);
 
-        when(gameService.getGameWithPriceHigherThanGivenValue(40d)).thenReturn(gameList);
+        when(gameService.getGameWithPriceHigherThanGivenValue(40d, 0)).thenReturn(gameList);
         this.mockMvc.perform(get("/games/getWithPriceHigherThan/"))
                 .andDo(print())
                 .andExpect(status().isNotFound());
