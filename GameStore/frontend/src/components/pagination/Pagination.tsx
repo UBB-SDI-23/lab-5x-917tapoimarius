@@ -1,7 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
 import { usePagination, DOTS } from '../../functions/usePagination';
-import './pagination.scss';
+import './Pagination.scss';
 const Pagination = (props: { onPageChange: Function; totalCount: number; siblingCount?: number; currentPage: number; pageSize: number; className: string; }) => {
   const {
     onPageChange,
