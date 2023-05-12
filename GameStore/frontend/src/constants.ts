@@ -1,4 +1,4 @@
-const PROD_BACKEND_API_URL = "https://celmaismechergamestore.mooo.com/api";
+const PROD_BACKEND_API_URL = "https://celmaismechergamestoree.duckdns.org/api";
 const DEV_BACKEND_API_URL = "http://localhost:80/api";
 
 export const BACKEND_API_URL =
